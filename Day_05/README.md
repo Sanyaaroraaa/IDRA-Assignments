@@ -1,153 +1,74 @@
-<div align="center">
+# Hotel Room Booking System 🏨
+> **Day 05 Mini Project** — *IDRA Assignments*
 
-# 🏨 Hotel Room Booking System
-### *Day 05 Core Mini Project | Python OOP & State Management*
-
-![Python](https://img.shields.io/badge/Python-3.8%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![Jupyter](https://img.shields.io/badge/Jupyter-Notebook-F37626?style=for-the-badge&logo=jupyter&logoColor=white)
-![Status](https://img.shields.io/badge/Status-Completed-2ea44f?style=for-the-badge)
-![Architecture](https://img.shields.io/badge/Architecture-Modular_OOP-8A2BE2?style=for-the-badge)
-
-<p align="center">
-  An end-to-end, menu-driven hotel reservation and inventory management application designed to handle real-time room availability, booking records, bill calculations, and cancellations.
-</p>
-
-</div>
+A modular, interactive console application built in Python that simulates a full hotel operations workflow, featuring dual access portals for **Guests** and **Hotel Administrators**.
 
 ---
 
-## 📑 Table of Contents
-- [Executive Overview](#-executive-overview)
-- [System Architecture](#-system-architecture)
-  - [High-Level Component Flow](#1-high-level-component-flow)
-  - [Class & Domain Model](#2-class--domain-model)
-  - [Transactional State Lifecycle](#3-transactional-state-lifecycle)
-- [Core Feature Matrix](#-core-feature-matrix)
-- [In-Memory Data Schemas](#-in-memory-data-schemas)
-- [Setup & Execution Guide](#-setup--execution-guide)
+## 📌 Key Features
+
+### 👤 Guest Portal
+- **Intelligent Room Recommendation:** Matches guest requirements (budget range, number of occupants, preferred amenities) to suggest the most suitable rooms.
+- **Real-Time Room Catalog:** Browse available room categories (Standard, Deluxe, Suite) with detailed pricing and availability status.
+- **Automated Booking & Billing:** Instant reservation system that computes stay charges based on room rates and duration.
+- **Booking Management & Cancellation:** Lookup active reservations by booking reference or room number, with instant room restoral upon cancellation.
+
+### 🛠️ Admin Panel
+- **Role-Based Authentication:** Secure passcode/login gate for hotel staff and administrators.
+- **Live Inventory Dashboard:** Overview of total room inventory, current occupancy rates, and active guest records.
+- **Room Management:** Add new rooms, update nightly pricing, and manually toggle room availability (e.g., for maintenance).
+- **Audit & Revenue Records:** Inspect total bookings, active guest lists, and billing summaries.
 
 ---
 
-## 📌 Executive Overview
-
-The **Hotel Room Booking System** simulates real-world hotel front-desk operations. It manages room availability pools across multiple tiers (Standard, Deluxe, Suite), computes stay-duration pricing dynamically, records guest transactions, and guarantees state consistency with automatic inventory rollback during cancellations.
-
----
-
-## 🏗️ System Architecture
-
-### 1. High-Level Component Flow
+## 🔄 System Workflow Diagram
 
 ```mermaid
 flowchart TD
-    CLI([👤 User / Front Desk CLI]) --> Router{Select Action}
+    Start([Launch Application]) --> PortalChoice{Select Role}
 
-    Router -->|1. View Rooms| CheckModule[Availability & Catalog Engine]
-    Router -->|2. Book Room| BookingModule[Reservation & Allocation Engine]
-    Router -->|3. View Bookings| LedgerModule[Guest Ledger & Directory Engine]
-    Router -->|4. Cancel Booking| CancellationModule[Cancellation & Release Engine]
-    Router -->|5. Exit| Terminate([Graceful Shutdown])
+    %% Guest Flow
+    PortalChoice -->|1. Guest Portal| GuestMenu{Guest Options}
+    GuestMenu -->|1| RecEngine[Get Room Recommendations]
+    GuestMenu -->|2| ViewRooms[View Available Rooms]
+    GuestMenu -->|3| BookRoom[Book Room & Generate Invoice]
+    GuestMenu -->|4| ManageBookings[View / Cancel Reservation]
+    GuestMenu -->|5| ReturnG[Back to Main Menu] --> PortalChoice
 
-    CheckModule <--> RoomDB[(Room Inventory)]
-    BookingModule <--> RoomDB
-    BookingModule ---> BookingDB[(Bookings Ledger)]
-    LedgerModule <---> BookingDB
-    CancellationModule <---> BookingDB
-    CancellationModule <---> RoomDB
+    %% Admin Flow
+    PortalChoice -->|2. Admin Portal| AdminAuth{Admin Authentication}
+    AdminAuth -->|Invalid Credentials| AuthFail[Access Denied] --> PortalChoice
+    AdminAuth -->|Success| AdminMenu{Admin Options}
+    AdminMenu -->|1| ViewAll[View All Bookings & Guests]
+    AdminMenu -->|2| ManageInv[Add / Update Rooms & Rates]
+    AdminMenu -->|3| RoomStatus[Toggle Room Availability]
+    AdminMenu -->|4| ReturnA[Back to Main Menu] --> PortalChoice
+
+    %% Exit Flow
+    PortalChoice -->|3. Exit| ExitApp([Exit Program])
+
+    RecEngine --> GuestMenu
+    ViewRooms --> GuestMenu
+    BookRoom --> GuestMenu
+    ManageBookings --> GuestMenu
+
+    ViewAll --> AdminMenu
+    ManageInv --> AdminMenu
+    RoomStatus --> AdminMenu
 ```
 
 ---
 
-### 2. Class & Domain Model
+## 💡 Concepts & Implementation Details
 
-```mermaid
-classDiagram
-    class HotelSystem {
-        -dict rooms_inventory
-        -dict active_bookings
-        +display_available_rooms()
-        +book_room(guest_name, room_type, nights)
-        +cancel_reservation(booking_id)
-        +view_active_bookings()
-    }
-
-    class Room {
-        -int room_no
-        -str room_type
-        -float price_per_night
-        -bool is_available
-        +set_status(status)
-    }
-
-    class BookingRecord {
-        -str booking_id
-        -str guest_name
-        -int room_no
-        -int duration_nights
-        -float total_amount
-    }
-
-    HotelSystem "1" *-- "many" Room : manages
-    HotelSystem "1" *-- "many" BookingRecord : tracks
-```
+- **Recommendation Engine:** Evaluates user constraints (capacity and budget) against room metadata to return ranked suggestions.
+- **State Management:** Dictionaries and lists used to maintain persistent in-memory records of rooms, bookings, and customer details.
+- **Defensive Input Handling:** Validation loops for numeric inputs, invalid option selections, and date/night limits to prevent runtime errors.
+- **Modular Code Structure:** Clean separation of concerns between guest-facing flows, administrative actions, and core helper functions.
 
 ---
 
-### 3. Transactional State Lifecycle
+## 🚀 How to Run
 
-```mermaid
-stateDiagram-v2
-    [*] --> Available : Room Initialized
-    Available --> Blocked : Booking Requested
-    Blocked --> Confirmed : Details Validated & Bill Computed
-    Blocked --> Available : Validation Failed / Cancelled
-    Confirmed --> Occupied : Active Reservation
-    Occupied --> Available : Booking Cancelled / Released
-    Available --> [*] : Exit System
-```
-
----
-
-## ✨ Core Feature Matrix
-
-| Feature | Implementation Logic | Operational Outcome |
-| :--- | :--- | :--- |
-| **Inventory Querying** | Categorical filtering on room map | Real-time status lookup by room category & rate |
-| **Smart Allocation** | First-available room ID resolution | Eliminates room collisions and double-booking |
-| **Dynamic Billing** | Nightly rate $\times$ duration calculator | Computes total costs instantly |
-| **Atomic Cancellation** | Reversible transaction state | Frees room flag and purges booking ledger entry |
-| **Input Validation** | Defensive loops & input guards | Prevents unexpected crashes on invalid inputs |
-
----
-
-## 🗄️ In-Memory Data Schemas
-
-### `Room` Schema
-```json
-{
-  "room_number": 101,
-  "room_type": "Deluxe",
-  "price_per_night": 2500.0,
-  "is_available": true
-}
-```
-
-### `BookingRecord` Schema
-```json
-{
-  "booking_id": "RES-101",
-  "guest_name": "John Doe",
-  "room_number": 101,
-  "room_type": "Deluxe",
-  "nights": 3,
-  "total_bill": 7500.0,
-  "status": "CONFIRMED"
-}
-```
-
----
-
-## 🚀 Setup & Execution Guide
-
-1. Open `Hotel_Room_Booking_System.ipynb` in **Jupyter Notebook**, **VS Code**, or **Google Colab**.
-2. Run all cells in order (`Restart & Run All`) to start the interactive console interface.
+1. Open `Hotel_Room_Booking_System.ipynb` in **VS Code**, **Jupyter Notebook**, or **Google Colab**.
+2. Run all cells sequentially (`Restart & Run All`) to launch the interactive console interface.
