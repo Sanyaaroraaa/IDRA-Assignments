@@ -20,10 +20,10 @@ Repository containing daily tasks and assignments completed during the IDRA prog
 | **Day 12** | [`Day_12/Used_Car_Preprocessing.ipynb`](./Day_12/Used_Car_Preprocessing.ipynb) | Used Car Data Preprocessing |
 | **Day 13** | [`Day_13/Restaurant_Branch_Performance_EDA.ipynb`](./Day_13/Restaurant_Branch_Performance_EDA.ipynb) | Restaurant Branch Performance EDA |
 | **Day 14** | [`Day_14/Food_Delivery_Visualization_Portfolio.ipynb`](./Day_14/Food_Delivery_Visualization_Portfolio.ipynb) | Food Delivery Data Visualization Portfolio |
-| **Day 15** | [`Day_15/Executive_Hotel_Booking_EDA.ipynb`](./Day_15/Day_15_Executive_Hotel_Booking_EDA.ipynb) | Executive Hotel Booking EDA |
-| **Day 16** | [`Day_16/Student_Wellbeing_Statistical_Analysis.ipynb`](./Day_16/Day_16_Student_Wellbeing_Statistical_Analysis.ipynb) | Student Wellbeing Statistical Analysis & Probability |
+| **Day 15** | [`Day_15/Executive_Hotel_Booking_EDA.ipynb`](./Day_15/Executive_Hotel_Booking_EDA.ipynb) | Executive Hotel Booking EDA |
+| **Day 16** | [`Day_16/Student_Wellbeing_Statistical_Analysis.ipynb`](./Day_16/Student_Wellbeing_Statistical_Analysis.ipynb) | Student Wellbeing Statistical Analysis & Probability |
 | **Day 17** | — | ML Introduction |
-| **Day 18 & 19** | [`Day_18_19/ML_Student_Performance_Prediction_Updated.ipynb`](./Day_18_19/Day_18_19_ML_Student_Performance_Prediction_Updated.ipynb) | ML Student Performance Prediction & Model Evaluation |
+| **Day 18 & 19** | [`Day_18,19/ML_Student_Performance_Prediction_Updated.ipynb`](./Day_18,19/ML_Student_Performance_Prediction_Updated.ipynb) | ML Student Performance Prediction & Model Evaluation |
 
 ---
 
